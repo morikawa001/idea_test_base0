@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医療をよくするアイデア＆お困りごと提案フォーム（対照群）</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+  background: #f2f8f5;
+  color: #333;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 720px; margin: 0 auto; }
+
+/* ===== ヘッダー ===== */
+.header {
+  background: linear-gradient(135deg, #2d7a5f, #4caf88);
+  color: white;
+  padding: 24px 28px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.4em; margin-bottom: 6px; }
+.header p  { font-size: 0.85em; opacity: 0.88; }
+.header-sub {
+  margin-top: 10px;
+  font-size: 0.80em;
+  opacity: 0.80;
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 8px 14px;
+  line-height: 1.7;
+}
+
+/* ===== フォームブロック ===== */
+.block {
+  background: white;
+  border-left: 5px solid #4caf88;
+  border-radius: 0 0 8px 8px;
+  padding: 32px 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.block-title {
+  font-size: 1.05em; font-weight: bold;
+  color: #2d7a5f; margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #d4eddf;
+}
+
+/* ===== 設問 ===== */
+.q-block { margin-bottom: 24px; }
+.q-label {
+  font-size: 0.93em; font-weight: bold;
+  margin-bottom: 8px; display: block; color: #2c3e50;
+}
+.q-label .req { color: #e57373; font-size: 0.82em; margin-left: 4px; }
+
+/* ===== フォーム部品 ===== */
+select, input[type="text"], textarea {
+  width: 100%; padding: 10px 13px;
+  border: 1.5px solid #c5d9cc; border-radius: 7px;
+  font-size: 0.92em; font-family: inherit;
+  background: #fdfefe; transition: border 0.2s, box-shadow 0.2s;
+}
+select:focus, input:focus, textarea:focus {
+  outline: none; border-color: #4caf88;
+  background: #edf7f2; box-shadow: 0 0 0 3px rgba(76,175,136,0.15);
+}
+textarea { resize: vertical; min-height: 180px; }
+
+/* ===== ラジオ ===== */
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-group label {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.90em; cursor: pointer;
+  padding: 9px 14px;
+  border: 1.5px solid #d4eddf; border-radius: 8px;
+  transition: all 0.2s; background: #fdfefe;
+}
+.radio-group label:hover { background: #edf7f2; border-color: #a8d8bb; }
+.radio-group label.selected {
+  background: #edf7f2; border-color: #4caf88;
+  box-shadow: 0 0 0 2px rgba(76,175,136,0.18);
+}
+.radio-group input { margin-top: 2px; accent-color: #4caf88; flex-shrink: 0; }
+
+/* ===== ボタン ===== */
+.btn-row {
+  display: flex; gap: 12px;
+  justify-content: flex-end;
+  margin-top: 28px; flex-wrap: wrap;
+}
+.btn-preview { background: #2d7a5f; color: white; flex: 1; }
+.btn-reset   { background: #b2c5ba; color: white; }
+.btn-finish  { background: #2d7a5f; color: white; } 
+button {
+  padding: 12px 22px; border: none; border-radius: 8px;
+  font-size: 0.95em; font-weight: bold; cursor: pointer;
+  font-family: inherit; transition: opacity 0.2s, transform 0.1s;
+}
+button:hover  { opacity: 0.88; }
+button:active { transform: scale(0.97); }
+
+/* ===== モーダル共通 ===== */
+.modal-overlay {
+  display: none; position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.50); z-index: 1000;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white; border-radius: 14px;
+  padding: 28px; max-width: 640px; width: 94%;
+  max-height: 88vh; overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+  animation: fadeSlideIn 0.35s ease;
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.modal h2 { color: #2d7a5f; margin-bottom: 12px; font-size: 1.1em; }
+.modal pre {
+  background: #f4f8f6; padding: 14px; border-radius: 8px;
+  font-size: 0.81em; white-space: pre-wrap; line-height: 1.75;
+  font-family: 'Courier New', monospace; border: 1px solid #d4eddf;
+}
+.modal-btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.btn-mail  { background: #4caf88; color: white; }
+.btn-close { background: #b2c5ba; color: white; }
+
+/* ===== 感謝モーダル ===== */
+.thank-modal-overlay {
+  display: none; position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.55); z-index: 2000;
+  align-items: center; justify-content: center;
+}
+.thank-modal-overlay.active { display: flex; }
+.thank-modal {
+  background: white; border-radius: 20px;
+  padding: 44px 36px; max-width: 440px; width: 92%;
+  text-align: center;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.20);
+  animation: thankPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes thankPop {
+  0%   { opacity: 0; transform: scale(0.7); }
+  80%  { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.thank-icon {
+  font-size: 4em; margin-bottom: 16px;
+  animation: iconBounce 0.6s 0.3s cubic-bezier(0.175,0.885,0.32,1.275) both;
+}
+@keyframes iconBounce {
+  0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+  80%  { transform: scale(1.2) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.thank-title { font-size: 1.45em; font-weight: bold; color: #2d7a5f; margin-bottom: 12px; }
+.thank-body { font-size: 0.92em; color: #555; line-height: 1.9; margin-bottom: 16px; }
+.thank-body strong { color: #4caf88; }
+.thank-reply-box {
+  background: #edf7f2; border-left: 4px solid #4caf88;
+  border-radius: 8px; padding: 12px 16px;
+  margin: 0 0 24px; font-size: 0.88em;
+  color: #2d7a5f; text-align: left; line-height: 1.7;
+}
+.thank-reply-box .reply-email { font-weight: bold; word-break: break-all; color: #1a5c40; }
+.thank-btn-row { display: flex; flex-direction: column; gap: 10px; }
+.btn-new-idea {
+  background: linear-gradient(135deg, #2d7a5f, #4caf88);
+  color: white; padding: 13px 20px; border: none; border-radius: 10px;
+  font-size: 0.95em; font-weight: bold; cursor: pointer; font-family: inherit;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-new-idea:hover  { opacity: 0.88; }
+.btn-new-idea:active { transform: scale(0.97); }
+.btn-just-close {
+  background: #ecf0f1; color: #777; padding: 10px 20px;
+  border: none; border-radius: 10px;
+  font-size: 0.88em; cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+}
+.btn-just-close:hover { opacity: 0.75; }
+
+/* ===== 終了画面 ===== */
+.end-screen {
+  display: none; background: white;
+  border-radius: 0 0 12px 12px; padding: 56px 36px;
+  text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  animation: fadeSlideIn 0.5s ease;
+}
+.end-screen.active { display: block; }
+.end-icon { font-size: 4.5em; margin-bottom: 20px; animation: iconBounce 0.6s 0.2s cubic-bezier(0.175,0.885,0.32,1.275) both; }
+.end-title { font-size: 1.55em; font-weight: bold; color: #2d7a5f; margin-bottom: 16px; }
+.end-divider { width: 60px; height: 3px; background: linear-gradient(90deg, #4caf88, #82d4a8); border-radius: 2px; margin: 0 auto 28px; }
+.end-body { font-size: 0.95em; color: #555; line-height: 2.1; margin-bottom: 36px; }
+.end-body strong { color: #4caf88; }
+.btn-restart {
+  background: #edf7f2; color: #2d7a5f; border: 2px solid #4caf88;
+  padding: 12px 32px; border-radius: 8px;
+  font-size: 0.93em; font-weight: bold; cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.btn-restart:hover  { background: #d4eddf; }
+.btn-restart:active { transform: scale(0.97); }
+
+@media(max-width:600px){
+  .btn-row { flex-direction: column; }
+  button { width: 100%; }
+  .end-screen { padding: 40px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>💡 医療をよくするアイデア＆お困りごと提案フォーム</h1>
+    <p>現場の気づきやアイデアをカタチにします。</p>
+    <div class="header-sub">
+      📣 職種や経験年数は関係ありません。<br>
+      「なんとなく不便だな」と感じていることや、「こうだったらいいのに」というアイデアを、<br>
+      ぜひ気軽に教えてください。小さな声が、大きな改善につながります。
+    </div>
+  </div>
+
+  <!-- フォーム本体 -->
+  <div class="block" id="mainBlock">
+    <div class="block-title">📋 基本情報</div>
+
+    <div class="q-block">
+      <label class="q-label">所属部署 <span class="req">★必須</span></label>
+      <select id="q1" required>
+        <option value="">-- 選択してください --</option>
+        <option>GICU</option><option>手術室</option><option>外来</option>
+        <option>病棟</option><option>リハビリテーション科</option><option>薬剤部</option>
+        <option>放射線科</option><option>臨床検査部</option>
+        <option>医療情報・システム部門</option><option>臨床研究支援センター</option>
+        <option>事務部門</option><option>その他</option>
+      </select>
+    </div>
+
+    <div class="q-block">
+      <label class="q-label">氏名 <span class="req">★必須</span></label>
+      <input type="text" id="q2" placeholder="例：山田 太郎" required>
+    </div>
+
+    <div class="q-block">
+      <label class="q-label">返信用メールアドレス <span class="req">★必須</span></label>
+      <input type="text" id="q2b" placeholder="例：yamada.taro@example.com" required>
+    </div>
+
+    <div class="q-block">
+      <label class="q-label">職種 <span class="req">★必須</span></label>
+      <div class="radio-group" id="q3">
+        <label><input type="radio" name="q3" value="医師" onchange="highlightSelected('q3')"> 医師</label>
+        <label><input type="radio" name="q3" value="看護師" onchange="highlightSelected('q3')"> 看護師</label>
+        <label><input type="radio" name="q3" value="薬剤師" onchange="highlightSelected('q3')"> 薬剤師</label>
+        <label><input type="radio" name="q3" value="臨床工学技士" onchange="highlightSelected('q3')"> 臨床工学技士</label>
+        <label><input type="radio" name="q3" value="理学療法士・作業療法士" onchange="highlightSelected('q3')"> 理学療法士・作業療法士</label>
+        <label><input type="radio" name="q3" value="事務職" onchange="highlightSelected('q3')"> 事務職</label>
+        <label><input type="radio" name="q3" value="その他" onchange="highlightSelected('q3')"> その他</label>
+      </div>
+    </div>
+
+    <div class="block-title" style="margin-top:32px;">💬 お困りごと・アイデア</div>
+
+   <div class="q-block">
+  <label class="q-label">どのようなことでお困りですか。教えてください。 <span class="req">★必須</span></label>
+  <div style="position: relative;">
+    <div id="freetext-guide" style="
+      position: absolute; top: 0; left: 0; width: 100%;
+      padding: 10px 13px;
+      font-size: 0.88em; color: #aaa;
+      line-height: 2.0;
+      pointer-events: none;
+      white-space: pre;
+      z-index: 1;
+      font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    ">【質問１】困っていることについてお聞かせください
+・いつ：
+・どのようなこと：
+・どのように解決したいですか：
+
+【質問２】新しい機器のアイデアや既存機器の改善要望があればご記載ください</div>
+    <textarea id="freetext" required
+      style="min-height: 220px; position: relative; z-index: 2; background: transparent;"
+      oninput="document.getElementById('freetext-guide').style.display = this.value ? 'none' : 'block';"
+    ></textarea>
+  </div>
+</div>
+
+
+
+    <div class="btn-row">
+      <button type="button" class="btn-reset" onclick="resetForm()">🔄 やり直す</button>
+      <button type="button" class="btn-preview" onclick="showPreview()">👁️ 内容を確認して送信</button>
+    </div>
+    <div style="display:flex; justify-content:center; margin-top:12px;">
+      <button type="button" class="btn-finish" onclick="showEndScreen()">✅ 終了</button>
+    </div>
+  </div>
+
+  <!-- 終了画面 -->
+  <div class="end-screen" id="endScreen">
+    <div class="end-icon">🌿</div>
+    <div class="end-title">ありがとうございました</div>
+    <div class="end-divider"></div>
+    <div class="end-body">
+      現場からの小さな声が、<strong>医療をよりよくするための大切な一歩</strong>です。<br>
+      担当部署にて内容を確認し、<strong>検討結果をメールにてご連絡</strong>いたします。<br><br>
+      また気になることや新しいアイデアが浮かんだときは、<br>
+      いつでも気軽に投稿してください。💚
+    </div>
+    <button type="button" class="btn-restart" onclick="restartFromEnd()">
+      🔄 新しいアイデアを提案する
+    </button>
+  </div>
+
+</div><!-- /container -->
+
+<!-- プレビューモーダル -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal">
+    <h2>📋 入力内容の確認</h2>
+    <p style="font-size:0.85em;color:#666;margin-bottom:12px;">以下の内容で提出します。内容を確認してメールで送信してください。</p>
+    <pre id="previewText"></pre>
+    <div class="modal-btn-row">
+      <button class="btn-mail"  onclick="sendMail()">✉️ メールで送信</button>
+      <button class="btn-close" onclick="closePreviewAndThank()">✖ 閉じる</button>
+    </div>
+    <div style="display:flex; justify-content:center; margin-top:10px;">
+      <button class="btn-finish" onclick="closePreviewModal(); showEndScreen();">✅ 送信せずに終了</button>
+    </div>
+  </div>
+</div>
+
+<!-- 感謝モーダル -->
+<div class="thank-modal-overlay" id="thankModal">
+  <div class="thank-modal">
+    <div class="thank-icon">🎉</div>
+    <div class="thank-title">ありがとうございました！</div>
+    <div class="thank-body">
+      <strong id="thank-name-label"></strong><br>
+      あなたの現場からの声が、<br>
+      <strong>医療をよりよくするための第一歩</strong>になります。<br><br>
+      いただいたアイデアは担当部署にて内容を確認し、<br>
+      <strong>検討結果を登録いただいたメールアドレスへご連絡</strong>いたします。<br>
+      しばらくお待ちください😊
+    </div>
+    <div class="thank-reply-box">
+      📧 返信先：<span class="reply-email" id="thank-reply-email"></span>
+    </div>
+    <!-- ① カウントダウン表示を追加 -->
+    <p id="close-countdown-wrap" style="font-size:0.82em; color:#888; margin-bottom:12px;">
+      <span id="close-countdown">3</span> 秒後に自動的に閉じます
+    </p>
+    <div class="thank-btn-row">
+      <button class="btn-new-idea" onclick="startNewIdea()">💡 新しいアイデアを提案する</button>
+      <button class="btn-just-close" onclick="closeThankModal()">このまま閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MAIL_TO = 'ns.morizo@gmail.com';
+let startTime = null;
+const NAME_NG_WORDS = ['匿名', '無記名', 'anonymous', 'anon', '名無し', 'なし', 'ない', 'none', 'no name'];
+
+let formCompleted = false;
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5Cf97A3SUGcfb8F3l87unhhSgjoo7TGZ1ozyRdk2JFGlxmJF9SxQN06QtjtJbJ5RV/exec';
+const SESSION_ID = new URLSearchParams(window.location.search).get('sid')
+                   || 'direct_' + Date.now() + '_' + Math.random().toString(36).substr(2,9);
+const FORM_TYPE = new URLSearchParams(window.location.search).get('ft') || 'C';
+
+function sendLog(status, step) {
+  fetch(GAS_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      form_type: FORM_TYPE,
+      last_step: step,
+      status: status,
+      session_id: SESSION_ID
+    }),
+    keepalive: true
+  }).catch(function() {});
+}
+
+sendLog('form_opened', 0);
+
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden' && !formCompleted) {
+    sendLog('abandoned', 0);
+  }
+});
+
+document.addEventListener('input',  () => { if (!startTime) startTime = new Date(); });
+document.addEventListener('change', () => { if (!startTime) startTime = new Date(); });
+
+function highlightSelected(groupId) {
+  document.querySelectorAll(`#${groupId} label`).forEach(lbl => {
+    lbl.classList.toggle('selected', lbl.querySelector('input').checked);
+  });
+}
+
+function getVal(id)   { return (document.getElementById(id)||{value:''}).value.trim(); }
+function getRadio(nm) { const el = document.querySelector(`input[name="${nm}"]:checked`); return el ? el.value : ''; }
+
+function validate() {
+  const errs = [];
+  if (!getVal('q1')) errs.push('所属部署');
+  const name = getVal('q2');
+  if (!name) {
+    errs.push('氏名');
+  } else if (NAME_NG_WORDS.some(w => name.toLowerCase() === w.toLowerCase())) {
+    errs.push('氏名（匿名での受付はできません）');
+  }
+  const email = getVal('q2b');
+  if (!email) {
+    errs.push('返信用メールアドレス');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errs.push('メールアドレスの形式が正しくありません');
+  }
+  if (!getRadio('q3'))     errs.push('職種');
+  if (!getVal('freetext')) errs.push('お困りごと・アイデア');
+  return errs;
+}
+
+function buildText() {
+  const endTime = new Date();
+  const diffMs  = startTime ? endTime - startTime : 0;
+  const mins    = Math.floor(diffMs / 60000);
+  const secs    = Math.floor((diffMs % 60000) / 1000);
+  const elapsed = startTime ? `${mins}分${secs}秒` : '不明';
+  const lines = [
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    '　医療をよくするアイデア提案フォーム_同意なし　',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '【基本情報】',
+    `所属部署　　　：${getVal('q1') || '（未選択）'}`,
+    `氏　　名　　　：${getVal('q2') || '（未記入）'}`,
+    `メールアドレス：${getVal('q2b') || '（未記入）'}`,
+    `職　　種　　　：${getRadio('q3') || '（未選択）'}`,
+    '',
+    '【お困りごと・アイデア】',
+    getVal('freetext') || '（未記入）',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    `送信日時　　　　：${endTime.toLocaleString('ja-JP')}`,
+    `レポート作成時間：${elapsed}`,
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+  ];
+  return lines.join('\n');
+}
+
+function buildCsvText() {
+  const now = new Date();
+  const submissionId = now.toISOString().replace(/[-:T.Z]/g, '').slice(0, 15);
+  const submittedAt  = now.toLocaleString('ja-JP');
+  const diffMs = startTime ? now - startTime : 0;
+  const mins   = Math.floor(diffMs / 60000);
+  const secs   = Math.floor((diffMs % 60000) / 1000);
+  const elapsed = startTime ? `${mins}分${secs}秒` : '不明';
+  function esc(v) {
+    v = String(v ?? '');
+    return (v.includes('"')||v.includes(',')||v.includes('\n')) ? `"${v.replace(/"/g,'""')}"` : v;
+  }
+  const rows = [['submissionid','submittedat','fieldname','value'].join(',')];
+  const add = (f, v) => rows.push([esc(submissionId), esc(submittedAt), esc(f), esc(v)].join(','));
+  add('department',  getVal('q1'));
+  add('name',        getVal('q2'));
+  add('email',       getVal('q2b'));
+  add('occupation',  getRadio('q3'));
+  add('freetext',    getVal('freetext'));
+  add('report_creation_time', elapsed);
+  return rows.join('\n');
+}
+
+function showPreview() {
+  const errs = validate();
+  if (errs.length > 0) {
+    alert('⚠️ 以下の必須項目を確認してください：\n\n' + errs.join('\n'));
+    return;
+  }
+  document.getElementById('previewText').textContent = buildText();
+  document.getElementById('previewModal').classList.add('active');
+}
+
+// ② sendMail() に startCloseCountdown(3) を追加
+function sendMail() {
+  const body    = encodeURIComponent(buildText() + '\n\n\n--- CSV形式（システム取込用） ---\n' + buildCsvText());
+  const subject = encodeURIComponent(`【アイデア提案】${getVal('q2')}（${getVal('q1')}）`);
+  formCompleted = true;
+  sendLog('completed', 0);
+  window.location.href = `mailto:${MAIL_TO}?subject=${subject}&body=${body}`;
+  closePreviewModal();
+  showThankModal();
+  startCloseCountdown(3); // ← 追加
+}
+
+// ② カウントダウン関数を追加
+function startCloseCountdown(seconds) {
+  let remaining = seconds;
+  const countdownEl = document.getElementById('close-countdown');
+  if (countdownEl) countdownEl.textContent = remaining;
+
+  const timer = setInterval(() => {
+    remaining--;
+    if (countdownEl) countdownEl.textContent = remaining;
+    if (remaining <= 0) {
+      clearInterval(timer);
+      window.close();
+      setTimeout(() => {
+        const thankModal = document.getElementById('thankModal');
+        if (thankModal && thankModal.classList.contains('active')) {
+          closeThankModal();
+          showEndScreen();
+        }
+      }, 300);
+    }
+  }, 1000);
+}
+
+function closePreviewModal() { document.getElementById('previewModal').classList.remove('active'); }
+
+function showThankModal() {
+  document.getElementById('thank-name-label').textContent  = getVal('q2');
+  document.getElementById('thank-reply-email').textContent = getVal('q2b');
+  document.getElementById('thankModal').classList.add('active');
+}
+function closeThankModal()      { document.getElementById('thankModal').classList.remove('active'); }
+function closePreviewAndThank() { closePreviewModal(); showThankModal(); }
+function startNewIdea()         { closeThankModal(); resetForm(); }
+
+function resetForm() {
+  document.getElementById('q1').value = '';
+  document.getElementById('q2').value = '';
+  document.getElementById('q2b').value = '';
+  document.querySelectorAll('input[name="q3"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.radio-group label').forEach(l => l.classList.remove('selected'));
+  document.getElementById('freetext').value = '';
+  document.getElementById('freetext-guide').style.display = 'block'; // ← 追加
+  startTime = null;
+  formCompleted = false;
+  document.getElementById('mainBlock').style.display = '';
+  document.getElementById('endScreen').classList.remove('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restartFromEnd() {
+  document.getElementById('endScreen').classList.remove('active');
+  resetForm();
+}
+
+function showEndScreen() {
+  if (!formCompleted) sendLog('abandoned_end_btn', 0);
+  document.getElementById('mainBlock').style.display = 'none';
+  document.getElementById('endScreen').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
