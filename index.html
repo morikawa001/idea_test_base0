@@ -359,7 +359,7 @@ button:active { transform: scale(0.97); }
     </div>
     <!-- ① カウントダウン表示を追加 -->
     <p id="close-countdown-wrap" style="font-size:0.82em; color:#888; margin-bottom:12px;">
-      <span id="close-countdown">3</span> 秒後に自動的に閉じます
+      <span id="close-countdown">10</span> 秒後に自動的に閉じます
     </p>
     <div class="thank-btn-row">
       <button class="btn-new-idea" onclick="startNewIdea()">💡 新しいアイデアを提案する</button>
@@ -494,7 +494,7 @@ function showPreview() {
   document.getElementById('previewModal').classList.add('active');
 }
 
-// ② sendMail() に startCloseCountdown(3) を追加
+// ② sendMail() に startCloseCountdown(10) を追加
 function sendMail() {
   const body    = encodeURIComponent(buildText() + '\n\n\n--- CSV形式（システム取込用） ---\n' + buildCsvText());
   const subject = encodeURIComponent(`【アイデア提案】${getVal('q2')}（${getVal('q1')}）`);
@@ -503,7 +503,7 @@ function sendMail() {
   window.location.href = `mailto:${MAIL_TO}?subject=${subject}&body=${body}`;
   closePreviewModal();
   showThankModal();
-  startCloseCountdown(3); // ← 追加
+  startCloseCountdown(10); // ← 追加
 }
 
 // ② カウントダウン関数を追加
